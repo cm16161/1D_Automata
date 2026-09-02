@@ -6,7 +6,7 @@
 #include <functional>
 #include <string>
 
-constexpr size_t ARR_SIZE = 74;
+constexpr size_t ARR_SIZE = 89;
 
 using namespace std;
 
@@ -42,8 +42,9 @@ class Engine {
 	Engine& process(){
 		for(int i = 0; i < ARR_SIZE; i++){
 			m_front[i] =
-				WolfRamRule30(i);
-				//CRule1(i);
+				//C_Rule1(i);
+				WR_Rule90(i);
+
 		}
 		return *this;
 	}
@@ -64,18 +65,24 @@ class Engine {
 	private:
 
 	// wrap
-	bool CRule1(ssize_t idx){
+	bool C_Rule1(ssize_t idx){
 		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
 		idx = idx % ARR_SIZE;
 		ssize_t r = (idx + 1) % ARR_SIZE;
 		return m_back[l] && m_back[idx] || m_back[idx] || m_back[r];
 	}
 
-	bool WolfRamRule30(ssize_t idx){
+	bool WR_Rule30(ssize_t idx){
 		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
 		idx = idx % ARR_SIZE;
 		ssize_t r = (idx + 1) % ARR_SIZE;
 		return m_back[l] ^ (m_back[idx] || m_back[r]);
+	}
+	bool WR_Rule90(ssize_t idx){
+		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
+		idx = idx % ARR_SIZE;
+		ssize_t r = (idx + 1) % ARR_SIZE;
+		return m_back[l] ^ m_back[r];
 	}
 
 
