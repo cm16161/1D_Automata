@@ -43,7 +43,7 @@ class Engine {
 		for(int i = 0; i < ARR_SIZE; i++){
 			m_front[i] =
 				//C_Rule1(i);
-				WR_Rule90(i);
+				WR_Rule150(i);
 
 		}
 		return *this;
@@ -83,6 +83,13 @@ class Engine {
 		idx = idx % ARR_SIZE;
 		ssize_t r = (idx + 1) % ARR_SIZE;
 		return m_back[l] ^ m_back[r];
+	}
+
+	bool WR_Rule150(ssize_t idx){
+		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
+		idx = idx % ARR_SIZE;
+		ssize_t r = (idx + 1) % ARR_SIZE;
+		return m_back[l] ^ m_back[idx] ^ m_back[r];
 	}
 
 
