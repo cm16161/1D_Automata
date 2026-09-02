@@ -36,7 +36,7 @@ class Engine {
 
 	void process(){
 		for(int i = 0; i < ARR_SIZE; i++){
-			m_front[i] = isAlive(m_back[i]);
+			m_front[i] = isAlive(i);
 		}
 	}
 
@@ -50,11 +50,20 @@ class Engine {
 
 	private:
 
+	// wrap
 	bool isAlive(ssize_t idx){
-		int l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
-		int r = (idx + 1) % ARR_SIZE;
-		return true;
+		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
+		idx = idx % ARR_SIZE;
+		ssize_t r = (idx + 1) % ARR_SIZE;
+		return m_back[l] && m_back[idx] || m_back[idx] || m_back[r];
 	}
+
+	// TODO: reflection (rather than wrap)
+	//bool isAlive(ssize_t idx){
+	//	int l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
+	//	int r = (idx + 1) % ARR_SIZE;
+	//	return true;
+	//}
 
 	vector<bool> m_back;
 	vector<bool> m_front;
@@ -65,11 +74,14 @@ int main(){
 	std::cout << "\033[2J\033[1;1H";
 
 	Engine e;
-	e.set(ARR_SIZE/2);
+	ssize_t middle = ARR_SIZE/2;
+	e.set(middle-1);
+	e.set(middle);
+	e.set(middle+1);
 	while(true){
 		e.process();
 		e.print();
-		this_thread::sleep_for(chrono::milliseconds(500));
+		this_thread::sleep_for(chrono::milliseconds(100));
 	}
 
 	return 0;
