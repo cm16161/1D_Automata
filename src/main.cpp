@@ -3,10 +3,15 @@
 #include <algorithm>
 #include <thread>
 #include <chrono>
+#include <functional>
+#include <string>
 
 constexpr size_t ARR_SIZE = 74;
 
 using namespace std;
+
+const string WHITE = "\033[37m";
+const string GREEN = "\033[32m";
 
 class Engine {
 	public:
@@ -34,15 +39,23 @@ class Engine {
 		m_back[idx] = false;
 	}
 
-	void process(){
+	Engine& process(){
 		for(int i = 0; i < ARR_SIZE; i++){
-			m_front[i] = isAlive(i);
+			m_front[i] =
+				WolfRamRule30(i);
+				//CRule1(i);
 		}
+		return *this;
 	}
 
 	void print(){
 		for(auto i : m_front){
-			cout << i;
+			if(i){
+				cout << GREEN << i;
+			}
+			else{
+				cout << WHITE << i;
+			}
 		}
 		cout << endl;
 		swap(m_front, m_back);
@@ -51,12 +64,20 @@ class Engine {
 	private:
 
 	// wrap
-	bool isAlive(ssize_t idx){
+	bool CRule1(ssize_t idx){
 		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
 		idx = idx % ARR_SIZE;
 		ssize_t r = (idx + 1) % ARR_SIZE;
 		return m_back[l] && m_back[idx] || m_back[idx] || m_back[r];
 	}
+
+	bool WolfRamRule30(ssize_t idx){
+		ssize_t l = (idx - 1) < 0 ? ARR_SIZE-1 : idx-1;
+		idx = idx % ARR_SIZE;
+		ssize_t r = (idx + 1) % ARR_SIZE;
+		return m_back[l] ^ (m_back[idx] || m_back[r]);
+	}
+
 
 	// TODO: reflection (rather than wrap)
 	//bool isAlive(ssize_t idx){
@@ -68,6 +89,7 @@ class Engine {
 	vector<bool> m_back;
 	vector<bool> m_front;
 
+
 };
 
 int main(){
@@ -75,13 +97,12 @@ int main(){
 
 	Engine e;
 	ssize_t middle = ARR_SIZE/2;
-	e.set(middle-1);
+	//e.set(middle-1);
 	e.set(middle);
-	e.set(middle+1);
+	//e.set(middle+1);
 	while(true){
-		e.process();
-		e.print();
-		this_thread::sleep_for(chrono::milliseconds(100));
+		e.process().print();
+		this_thread::sleep_for(chrono::milliseconds(50));
 	}
 
 	return 0;
